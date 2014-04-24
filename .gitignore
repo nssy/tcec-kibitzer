@@ -52,3 +52,14 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# NssY additions
+Api/__pycache__
+*.tmp
+*.bak
+*.swp
+*~
+Desktop.ini
+.DS_Store
+Api/*.txt
+Chrome/*.txt
+

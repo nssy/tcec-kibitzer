@@ -1,0 +1,209 @@
+/*!
+ * TCEC Kibitzer CSS Styles v1.0
+ * http://github.com/nssy/tcec-kibitzer/
+ *
+ *
+ * Copyright 2014 NssY Wanyonyi
+ * Released under the GPL3 license
+ * http://github.com/nssy/tcec-kibitzer/Licence.txt
+ *
+ * Date: 2014-04-11T10:30Z
+ */
+#tcec-kibitzer {
+	font-family:  "Inconsolatla LGC", "Source Code Pro", Arial, sans-serif;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	margin: 10px;
+	background: rgba(0,0,0,0.6);
+	z-index: 10;
+	padding: 8px;
+	border-radius: 10px;
+	width: 500px;
+	min-height:70px;
+	border: 1px solid green;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transition: background-color .65s ease-in-out;
+    -moz-transition: background-color .65s ease-in-out;
+    -o-transition: background-color .65s ease-in-out;
+    -ms-transition: background-color .65s ease-in-out;
+    -khtml-transition: background-color .65s ease-in-out;
+    transition: background-color .65s ease-in-out;
+}
+#tcec-kibitzer:hover{
+	background: rgba(0,0,0,0.8);
+}
+
+#tcec-kibitzer-title {
+	font-family:  "Square721 BdEx BT", "Univers Condensed", Helvetica;
+	font-size: 125%;
+	font-weight: 300;
+	color: rgba(255,255,255,0.9);
+	overflow: hidden;
+}
+
+#tcec-kibitzer hr{
+	background:#000;
+	border-bottom:1px solid #000;
+	margin:4px auto 1px;
+}
+
+#tcec-kibitzer-name {
+	float: left;
+	text-shadow: 1px 1px #000;
+	cursor:pointer;
+	font-weight:bold;
+}
+
+#tcec-kibitzer-source, #tcec-kibitzer-engines {
+	float: right;
+	font-family:  "Inconsolatla LGC", "Source Code Pro", Arial, sans-serif;
+	font-size:98%;
+	text-shadow: 1px 1px #000;
+	margin-left:5px;
+}
+
+#tcec-kibitzer-toolbar{
+	overflow:hidden;
+	padding:3px 0;
+}
+
+#tcec-kibitzer-toolbar > div{
+	margin: 4px 0;
+}
+
+#tcec-kibitzer-toolbar .gears{
+	float:right;
+	color:white;
+	margin-top:11px;
+}
+
+#tcec-kibitzer-button{
+	padding:3px 20px;
+	float:left;
+    color: rgba(203,203,203,0.7);
+    display: inline-block;
+    cursor: pointer;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    border: solid #bbd 1px;
+    box-shadow: 0 1px 2px #bbb, 0 -1px 1px #ccc, inset 0 -1px 1px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.8);
+    -moz-box-shadow: 0 1px 2px #bbb, 0 -1px 1px #ccc, inset 0 -1px 1px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.8);
+    -webkit-box-shadow: 0 1px 2px #bbb, 0 -1px 1px #ccc, inset 0 -1px 1px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.8);
+    text-shadow: 1px 1px #000;
+    background: -moz-linear-gradient(top, #000058 0%, #000017 100%); /* firefox */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#000058), color-stop(100%,#000017)); /* webkit */
+}
+
+#tcec-kibitzer-button:hover{
+    color: #fff;
+    background: -moz-linear-gradient(top, #000027 0%, #000038 100%); /* firefox */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#000027), color-stop(100%,#000038)); /* webkit */
+}
+
+#tcec-kibitzer-button:active {
+	color: rgba(255,255,255,0.5);
+}
+
+#tcec-kibitzer-status-toolbar{
+	overflow:hidden;
+	color: rgba(100,255,100,0.7);
+	font-weight:bold;
+	font-size:123%;
+	text-shadow: 1px 1px #000;
+}
+
+#tcec-kibitzer-status-toolbar div{
+	max-width:22%;
+	min-width:4%;
+	float:left;
+	margin:0 10px 5px 0;
+	min-height:18px;
+	padding:2px 4px;
+	text-align:center;
+	border:1px solid rgba(101,112,130, 0.55);
+	background: rgba(100,100,100,0.6);
+	-webkit-box-shadow: 1px 1px 0 rgba(0,0,0,0.65);
+	-moz-box-shadow: 1px 1px 0 rgba(0,0,0,0.65);
+	box-shadow: 1px 1px 0 rgba(0,0,0,0.65);
+	cursor: pointer;
+	border-radius: 2px;
+	color: #13e9ec;
+	font-size:106.5%;
+}
+
+#tcec-kibitzer-status-toolbar div:last-child{
+	margin-right:2px;
+	float:right;
+}
+
+#tcec-kibitzer-msg, #tcec-kibitzer-pvs{
+	font-size: 99%;
+	font-weight: 300;
+	font-family: "Trebuchet MS", Terminus, "Source Code Pro";
+	color: rgba(235,255,235,0.8);
+	min-height:30px;
+	overflow:scroll;
+	overflow-x:hidden;
+    overflow-y:visible;
+    margin-right:-7px;
+}
+
+#tcec-kibitzer-msg{
+	overflow-y:hidden;
+	max-height:43px;
+	margin-bottom:-2px;
+}
+
+#tcec-kibitzer-pvs{
+	font-size:110%;
+	font-weight: bold;
+	background: rgba(0,0,0,0.40);
+	margin-left:-6px;
+	padding-left:5px;
+	border:1px solid rgba(0,0,0,0.47);
+	border-radius: 2px;
+	height:168px;
+}
+
+#tcec-kibitzer-pvs span{
+	padding-top:1px;
+}
+
+#tcec-kibitzer #tcec-kibitzer-pvs span.fail-high, #tcec-kibitzer-score.fail-high{
+	color:#2edc2e; /* lowerbound */
+}
+
+#tcec-kibitzer #tcec-kibitzer-pvs span.fail-low, #tcec-kibitzer-score.fail-low{
+	color:#dc2e2e; /* upperbound */
+}
+
+#tcec-kibitzer-pvs span.active{
+	color:#ffc;
+}
+
+
+#tcec-kibitzer-status span{
+	display:block;
+	text-shadow: 1px 1px #000;
+}
+
+#tcec-kibitzer-msg span.error{
+	color:red;
+}
+
+#tcec-kibitzer-msg span.ok{
+	color:green;
+}
+
+#tcec-kibitzer-msg span .bright{
+	color:#ffc;
+}
+
+#min-restore{
+	padding: 0 5px 0 0;
+	color:#ffc;
+}

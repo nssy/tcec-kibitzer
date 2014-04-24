@@ -1,0 +1,36 @@
+[
+	{
+		"name": "Stockfish DD (win)",
+		"path": "engines/stockfish_DD_x64.exe",
+		"uci_options": {
+			"Threads": 1,
+			"Hash": 256
+		}
+	},
+	{
+		"name": "Stockfish DD (linux)",
+		"path": "engines/stockfish_DD_x64",
+		"uci_options": {
+			"Threads": 1,
+			"Hash": 512
+		}
+	},
+	{
+		"name": "Komodo 5 (win)",
+		"path": "engines/komodo.exe",
+		"comment": "Please download this engine manually from komodo website",
+		"uci_options": {
+			"Threads": 1,
+			"Hash": 256
+		}
+	},
+	{
+		"name": "Houdini 1.5 (win)",
+		"path": "engines/houdini.exe",
+		"comment": "Please download this engine manually from houdini website",
+		"uci_options": {
+			"Threads": 1,
+			"Hash": 256
+		}
+	}
+]

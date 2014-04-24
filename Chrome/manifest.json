@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+
+  "name": "TCEC Kibitzer",
+  "description": "Works on tcec.chessdom.com/live.php webpage.",
+  "icons": {
+      "128": "icon.png"
+   },
+  "version": "1.0",
+  "web_accessible_resources": ["thinking.gif", "waiting.png"],
+
+  "content_scripts": [
+    {
+      "matches": ["http://tcec.chessdom.com/live.php", "http://tcec.chessdom.com/archive.php"],
+      "css": ["style.css"],
+      "js": ["jquery.js", "tcec-kibitzer.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": [
+    "tabs", "<all_urls>"
+  ],
+  "background": {
+      "scripts": [ "background.js" ]
+   }
+
+}

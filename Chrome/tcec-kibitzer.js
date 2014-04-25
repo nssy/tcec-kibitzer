@@ -11,9 +11,13 @@
  */
 /* jshint multistr:true */
 
-var ws_url = 'http://localhost:2035'; // Web Service URL
-var interval = 1000; // Distance in time (milliseconds) for fetching engine output from the Web Service API (Its not recommeded to set this too low)
+// Web Service URL
+var ws_url = 'http://localhost:2035';
 
+// Distance in time (milliseconds) for fetching engine output
+// from the Web Service API
+// (Its not recommeded to set this too low)
+var interval = 1000;
 
 var kibitzer_window = '<div id="tcec-kibitzer">\
 <div id="tcec-kibitzer-title">\
@@ -317,7 +321,7 @@ function set_position() {
 }
 
 // Creates the engines dropdown
-function set_engines_dropdown(engines) {
+function update_engines_dropdown(engines) {
   var div = document.getElementById("tcec-kibitzer-engines");
   var select = document.getElementById("tcec-kibitzer-engine-options");
   var opt;
@@ -330,18 +334,21 @@ function set_engines_dropdown(engines) {
     };
   }
 
+  // Remove all and add a fresh
+  while (select.firstChild) {
+    select.removeChild(select.firstChild);
+  }
+
   for (var i = 0; i < engines.length; i++) {
     if (engines[i]) {
       var opt_id = "tcec-kibitzer-engine-option-";
       opt_id += engines[i].name.replace(/[^a-zA-Z0-9\._]/g, '-').replace(/[\-]+/g, '-').replace(/[\-]+$/g, '').toLowerCase();
-      opt = document.getElementById(opt_id);
-      if (!opt) {
-        opt = document.createElement("option");
-        opt.value = i;
-        opt.innerHTML = engines[i].name;
-        opt.id = opt_id;
-        select.appendChild(opt);
-      }
+
+      opt = document.createElement("option");
+      opt.value = i;
+      opt.innerHTML = engines[i].name;
+      opt.id = opt_id;
+      select.appendChild(opt);
     }
   }
 
@@ -355,10 +362,10 @@ function set_engine(engine) {
       'engine_no': engine
     },
     dataType: 'json',
-    timeout: 5000,
+    timeout: 20000,
     error: function () {
       online = false;
-      status(false, 'Failed to connect to Web Service API');
+      status(false, 'Web Service API is not responding ....');
     },
     beforeSend: function () {
       status(true, 'Changing engine ...');
@@ -440,7 +447,7 @@ $("#tcec-kibitzer-button").click(function () {
     var eng_select = document.getElementById("tcec-kibitzer-engine-options");
     var engine_no = 0;
     if (eng_select) {
-      engine_no = eng_select.options[eng_select.selectedIndex].value;
+      engine_no = eng_select.selectedIndex;
     }
 
     // Start our analysis
@@ -467,7 +474,7 @@ $("#tcec-kibitzer-button").click(function () {
 
         // Create/Update engines dropdown
         if (json.engines) {
-          set_engines_dropdown(json.engines);
+          update_engines_dropdown(json.engines);
           // Show current selected engine
           eng_select = document.getElementById("tcec-kibitzer-engine-options");
           if (eng_select) {

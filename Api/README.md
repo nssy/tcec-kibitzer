@@ -136,7 +136,7 @@ python api.py
 ```
 _Otherwise you will need to specify python together with its path when calling api.py_
 
-Example for Windows _(Where python is installed in __C:\python34__ folder)_
+Example for Windows _(Where python is installed in **C:\python34** folder)_
 ```sh
 C:\python34\python.exe api.py
 ```

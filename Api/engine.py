@@ -106,125 +106,123 @@ def parseOutput():
 			print("\nEngine stopped .....")
 			break
 
-		if not eng.stdout.readline().decode().rstrip():
-			# No output (waiting for engine to output)
-			print('no new output from engine .....')
-			sleep(0.5)
-		else:
-			# Clear all pv info when asked to
-			if resetOutput:
-				try:
-					output.clear()
-					eng.stdout.flush()
-					print('- - cleared output')
-					resetOutput = False
+		# Clear all pv info
+		if resetOutput:
+			try:
+				output.clear()
+				pv = {}
+				bounds = {}
+				score = {}
+				eng.stdout.flush()
+				print('- - cleared output')
+				resetOutput = False
 
-				except:
-					print('Failed to clear ')
+			except:
+				print('Failed to clear ')
 
-			line = eng.stdout.readline().decode().rstrip()
+		line = eng.stdout.readline().decode().rstrip()
 
-			# Match pattern with current engine info line
-			m1 = r1.search(line)
-			m2 = r2.search(line)
-			m3 = r3.search(line)
-			m4 = r4.search(line)
-			m5 = r5.search(line)
-			m6 = r6.search(line)
-			m7 = r7.search(line)
-			m8 = r8.search(line)
-			m9 = r9.search(line)
-			m10 = r10.search(line)
-			m11 = r11.search(line)
-			m12 = r12.search(line)
-			m13 = r13.search(line)
+		# Match pattern with current engine info line
+		m1 = r1.search(line)
+		m2 = r2.search(line)
+		m3 = r3.search(line)
+		m4 = r4.search(line)
+		m5 = r5.search(line)
+		m6 = r6.search(line)
+		m7 = r7.search(line)
+		m8 = r8.search(line)
+		m9 = r9.search(line)
+		m10 = r10.search(line)
+		m11 = r11.search(line)
+		m12 = r12.search(line)
+		m13 = r13.search(line)
 
-			if m3:
-				output["depth"] = int(m3.group(1))
-			if m4:
-				output["seldepth"] = int(m4.group(1))
-			if m5:
-				output["currmove"] = str(m5.group(1))
-			if m6:
-				output["currmoveno"] = int(m6.group(1))
-			if m7:
-				output["nps"] = int(m7.group(1))
-			if m8:
-					output["time"] = int(m8.group(1))/1000.00
-			if m9:
-				# MultiPV mode
-				i = int(m9.group(1))
-				if m10:
-					pv[i] = m10.group(1)
+		if m3:
+			output["depth"] = int(m3.group(1))
+		if m4:
+			output["seldepth"] = int(m4.group(1))
+		if m5:
+			output["currmove"] = str(m5.group(1))
+		if m6:
+			output["currmoveno"] = int(m6.group(1))
+		if m7:
+			output["nps"] = int(m7.group(1))
+		if m8:
+				output["time"] = int(m8.group(1))/1000.00
+		if m9:
+			# MultiPV mode
+			i = int(m9.group(1))
+			if m10:
+				pv[i] = m10.group(1)
 
-				if m2: # Mate score found
-					if int(m2.group(1)) < 0:
-						if side == 'w':
-							# White would show -M3 for Mate in 3
-							score[i] = '-M'+str(abs(int(m2.group(1))))
-						if side == 'b':
-							# Black would show M3 for Mate in 3
-							score[i] = 'M'+str(abs(int(m2.group(1))))
-					else:
-						if side == 'w':
-							# White would show M3 for Mate in 3
-							score[i] = 'M'+str(m2.group(1))
-						if side == 'b':
-							# Black would show -M3 for Mate in 3
-							score[i] = '-M'+str(m2.group(1))
-
-				else: # usual score
-					if m1:
-						score[i] = int(m1.group(1))/100.00
-						if side == 'b':
-							score[i] *= -1 # White based score
-				if m11:
-					bounds[i] = 1
-				elif m12:
-					bounds[i] = -1
+			if m2: # Mate score found
+				if int(m2.group(1)) < 0:
+					if side == 'w':
+						# White would show -M3 for Mate in 3
+						score[i] = '-M'+str(abs(int(m2.group(1))))
+					if side == 'b':
+						# Black would show M3 for Mate in 3
+						score[i] = 'M'+str(abs(int(m2.group(1))))
 				else:
-					bounds[i] = 0
+					if side == 'w':
+						# White would show M3 for Mate in 3
+						score[i] = 'M'+str(m2.group(1))
+					if side == 'b':
+						# Black would show -M3 for Mate in 3
+						score[i] = '-M'+str(m2.group(1))
+
+			else: # usual score
+				if m1:
+					score[i] = int(m1.group(1))/100.00
+					if side == 'b':
+						score[i] *= -1 # White based score
+			if m11:
+				bounds[i] = 1
+			elif m12:
+				bounds[i] = -1
 			else:
-				# SinglePV mode
-				if m10:
-					pv[1] = m10.group(1)
+				bounds[i] = 0
+		else:
+			# SinglePV mode
+			if m10:
+				pv[1] = m10.group(1)
 
-				# TODO: Fix ugly repetition
-				if m2: # Mate score found
-					if int(m2.group(1)) < 0:
-						if side == 'w':
-							# White would show -M3 for Mate in 3
-							score[1] = '-M'+str(m2.group(1))
-						if side == 'b':
-							# Black would show M3 for Mate in 3
-							score[1] = 'M'+str(m2.group(1))
-					else:
-						if side == 'w':
-							# White would show M3 for Mate in 3
-							score[1] = 'M'+str(m2.group(1))
-						if side == 'b':
-							# Black would show -M3 for Mate in 3
-							score[1] = '-M'+str(m2.group(1))
-
-				else: # usual score
-					if m1:
-						score[1] = int(m1.group(1))/100.00
-				if m11:
-					bounds[1] = 1
-				elif m12:
-					bounds[1] = -1
+			# TODO: Fix ugly repetition
+			if m2: # Mate score found
+				if int(m2.group(1)) < 0:
+					if side == 'w':
+						# White would show -M3 for Mate in 3
+						score[1] = '-M'+str(m2.group(1))
+					if side == 'b':
+						# Black would show M3 for Mate in 3
+						score[1] = 'M'+str(m2.group(1))
 				else:
-					bounds[1] = 0
+					if side == 'w':
+						# White would show M3 for Mate in 3
+						score[1] = 'M'+str(m2.group(1))
+					if side == 'b':
+						# Black would show -M3 for Mate in 3
+						score[1] = '-M'+str(m2.group(1))
 
-			if m13:
-				output["tbhits"] = int(m13.group(1))
+			else: # usual score
+				if m1:
+					score[1] = int(m1.group(1))/100.00
+			if m11:
+				bounds[1] = 1
+			elif m12:
+				bounds[1] = -1
+			else:
+				bounds[1] = 0
 
-			output["pv"] = pv
-			output["score"] = score
-			output["bounds"] = bounds
-			#print(line)
-			#print(output)
-			#eng.stdout.flush()
+		if m13:
+			output["tbhits"] = int(m13.group(1))
+
+		output["pv"] = pv
+		output["score"] = score
+		output["bounds"] = bounds
+		#print(line)
+		#print(output)
+		#eng.stdout.flush()
 
 def uci(command):
     print('engine << '+command)

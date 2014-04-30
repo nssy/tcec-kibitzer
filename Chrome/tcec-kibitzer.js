@@ -185,7 +185,7 @@ function periodic_output() {
               break;
             }
           }
-          score_div.innerHTML = json.data.score[1];
+          score_div.innerHTML = json.data.score[1].toFixed(2);
         }
 
         if (json.data.depth) {
@@ -256,7 +256,7 @@ function periodic_output() {
             if (typeof json.data.score[i] !== "undefined" &&
               typeof json.data.pv[i] !== "undefined" &&
               typeof json.data.bounds[i] !== "undefined") {
-              pv_status(i, json.data.score[i], json.data.pv[i], json.data.currmoveno, json.data.bounds[i]);
+              pv_status(i, json.data.score[i].toFixed(2), json.data.pv[i], json.data.currmoveno, json.data.bounds[i]);
             }
           }
         }

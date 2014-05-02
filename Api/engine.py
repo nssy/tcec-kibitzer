@@ -77,7 +77,6 @@ def movesNotation(fen, moves, type=1):
 	return True, formatted
 
 def go():
-	global output
 	global resetOutput
 	resetOutput = True
 	uci('go infinite')
@@ -93,7 +92,6 @@ def parseOutput():
 	score = {}
 	pv = {}
 	bounds = {}
-	message = ''
 	fen = ''
 
 	while True:
@@ -152,36 +150,37 @@ def parseOutput():
 		if m9:
 			# MultiPV mode
 			i = int(m9.group(1))
-			if m10:
-				pv[i] = m10.group(1)
+			if i <= MultiPV:
+				if m10:
+					pv[i] = m10.group(1)
 
-			if m2: # Mate score found
-				if int(m2.group(1)) < 0:
-					if side == 'w':
-						# White would show -M3 for Mate in 3
-						score[i] = '-M'+str(abs(int(m2.group(1))))
-					if side == 'b':
-						# Black would show M3 for Mate in 3
-						score[i] = 'M'+str(abs(int(m2.group(1))))
+				if m2: # Mate score found
+					if int(m2.group(1)) < 0:
+						if side == 'w':
+							# White would show -M3 for Mate in 3
+							score[i] = '-M'+str(abs(int(m2.group(1))))
+						if side == 'b':
+							# Black would show M3 for Mate in 3
+							score[i] = 'M'+str(abs(int(m2.group(1))))
+					else:
+						if side == 'w':
+							# White would show M3 for Mate in 3
+							score[i] = 'M'+str(m2.group(1))
+						if side == 'b':
+							# Black would show -M3 for Mate in 3
+							score[i] = '-M'+str(m2.group(1))
+
+				else: # usual score
+					if m1:
+						score[i] = int(m1.group(1))/100.00
+						if side == 'b':
+							score[i] *= -1 # White based score
+				if m11:
+					bounds[i] = 1
+				elif m12:
+					bounds[i] = -1
 				else:
-					if side == 'w':
-						# White would show M3 for Mate in 3
-						score[i] = 'M'+str(m2.group(1))
-					if side == 'b':
-						# Black would show -M3 for Mate in 3
-						score[i] = '-M'+str(m2.group(1))
-
-			else: # usual score
-				if m1:
-					score[i] = int(m1.group(1))/100.00
-					if side == 'b':
-						score[i] *= -1 # White based score
-			if m11:
-				bounds[i] = 1
-			elif m12:
-				bounds[i] = -1
-			else:
-				bounds[i] = 0
+					bounds[i] = 0
 		else:
 			# SinglePV mode
 			if m10:
@@ -346,4 +345,4 @@ def houseKeeping():
 		print("Engine already exited .....")
 
 	sleep(1)
-	print('exiting .......')
+	print('    exiting .......')

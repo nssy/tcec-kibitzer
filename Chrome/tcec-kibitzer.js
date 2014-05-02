@@ -5,7 +5,7 @@
  *
  * Copyright 2014 NssY Wanyonyi
  * Released under the GPL3 license
- * http://github.com/nssy/tcec-kibitzer/Licence.txt
+ * http://github.com/nssy/tcec-kibitzer/License.txt
  *
  * Date: 2014-04-20T10:30Z
  */
@@ -167,12 +167,10 @@ function periodic_output() {
     success: function (json) {
       retries = 0;
       if (json.status && json.data) {
-
-        if (typeof json.data.score[1] !== "undefined") {
-
+        if ("1" in json.data.score) {
           var score_div = document.getElementById("tcec-kibitzer-score");
           score_div.className = '';
-          if (typeof json.data.bounds[1] !== "undefined") {
+          if ("1" in json.data.bounds) {
             switch (json.data.bounds[1]) {
             case 1:
               score_div.className += ' fail-low';
@@ -199,7 +197,7 @@ function periodic_output() {
           document.getElementById("tcec-kibitzer-depth").innerHTML = '';
         }
 
-        if (typeof json.data.pv[1] !== "undefined") {
+        if ("1" in json.data.pv) {
           document.getElementById("tcec-kibitzer-best").innerHTML = json.data.pv[1].split(' ')[0];
         } else {
           document.getElementById("tcec-kibitzer-best").innerHTML = '';
@@ -253,10 +251,10 @@ function periodic_output() {
         // PV info
         if (json.data.pv) {
           for (var i in json.data.pv) {
-            if (typeof json.data.score[i] !== "undefined" &&
-              typeof json.data.pv[i] !== "undefined" &&
-              typeof json.data.bounds[i] !== "undefined") {
+            try {
               pv_status(i, json.data.score[i].toFixed(2), json.data.pv[i], json.data.currmoveno, json.data.bounds[i]);
+            } catch (e) {
+              // console.log(e);
             }
           }
         }

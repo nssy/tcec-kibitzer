@@ -6,7 +6,7 @@
 # Requires Flask (http://flask.pocoo.org/)
 
 from flask import Flask, request, jsonify
-import sys, subprocess, pipes, json
+import sys, json
 import engine
 
 api = Flask(__name__)

@@ -6,7 +6,7 @@
 # Requires ChessBoard (included here)
 # Special thanks to John Eriksson (http://arainyday.se/projects/python/ChessBoard/)
 #
-import subprocess, pipes, re, atexit
+import subprocess, re, atexit
 from threading import Thread
 from time import sleep
 from ChessBoard import ChessBoard
@@ -338,7 +338,6 @@ def houseKeeping():
 	try:
 		if eng:
 			uci('quit')
-			pid = eng.pid()
 			eng.terminate()
 			print('Gracefully exited ......')
 	except:

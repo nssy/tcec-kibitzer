@@ -2,7 +2,7 @@ TCEC Kibitzer
 =============
 
 If you're a fun of computer chess tournaments like me, then you've probably
-heard of **TCEC** or __T__horesen __C__hess __E__ngines __C__ompetition which is a live chess
+heard of **TCEC** or __T__ horesen __C__ hess __E__ ngines __C__ ompetition which is a live chess
 tournament organized and maintained by Martin Thoresen in cooperation with
 Chessdom Arena.
 Check out the [TCEC Live Website](http://tcec.chessdom.com/live.php) here.

@@ -250,6 +250,7 @@ function periodic_output() {
 
         // PV info
         if (json.data.pv) {
+          clear_pv();
           for (var i in json.data.pv) {
             try {
               pv_status(i, json.data.score[i].toFixed(2), json.data.pv[i], json.data.currmoveno, json.data.bounds[i]);
@@ -306,7 +307,6 @@ function set_position() {
       // Check Status
       if (json.status) {
         // Analyzing
-        clear_pv();
         $('#tcec-kibitzer-toolbar .gears img').attr("src", think_icon);
         status(true, json.message + ' from ' + json.source + ' Board<br /><b class="bright">Thinking (' + json.fen + ')</b>');
       } else {

@@ -5,7 +5,7 @@
  *
  * Copyright 2014 NssY Wanyonyi
  * Released under the GPL3 license
- * http://github.com/nssy/tcec-kibitzer/Licence.txt
+ * https://github.com/nssy/tcec-kibitzer/blob/master/LICENSE.txt
  *
  * Date: 2014-04-11T10:30Z
  */
@@ -188,7 +188,6 @@
 	color:#ffc;
 }
 
-
 #tcec-kibitzer-status span{
 	display:block;
 	text-shadow: 1px 1px #000;
@@ -202,7 +201,7 @@
 	color:green;
 }
 
-#tcec-kibitzer-msg span .bright{
+#tcec-kibitzer-msg span .bright, #tcec-kibitzer-msg span.wait{
 	color:#ffc;
 }
 

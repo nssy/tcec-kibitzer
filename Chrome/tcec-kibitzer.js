@@ -5,12 +5,11 @@
  *
  * Copyright 2014 NssY Wanyonyi
  * Released under the GPL3 license
- * http://github.com/nssy/tcec-kibitzer/License.txt
+ * https://github.com/nssy/tcec-kibitzer/blob/master/LICENSE.txt
  *
  * Date: 2014-04-20T10:30Z
  */
 /* jshint multistr:true */
-
 // Web Service URL
 var ws_url = 'http://localhost:2035';
 
@@ -60,7 +59,7 @@ var tt = 0; // Thinking time taken by engine
 
 // Prints out log information
 function status(ok, msg) {
-  var span_css;
+  var span_css, waiting;
 
   if (online === false) {
     ok = false;
@@ -68,13 +67,17 @@ function status(ok, msg) {
   }
 
   if (running === false) {
-    ok = false;
+    waiting = true;
     $('#tcec-kibitzer-toolbar .gears img').attr("src", wait_icon);
-    msg += ' waiting....';
+    msg += '. waiting....';
   }
 
   if (ok === true) {
     span_css = 'ok';
+
+    if (waiting === true) {
+      span_css = 'wait';
+    }
   } else {
     span_css = 'error';
   }
@@ -372,7 +375,7 @@ function set_engine(engine) {
       // Check Status
       if (json.status) {
         // New Engine set
-        status(true, status.message);
+        status(true, json.message);
         set_position();
       } else {
         // Failed to setup engine
@@ -430,7 +433,7 @@ document.getElementById('tcec-kibitzer-board-source').onchange = function () {
 
 // Ask our Web Service API to change moves notation type
 document.getElementById('tcec-kibitzer-best').onclick = function () {
-  $.get(ws_url + '/notation?', function (data) {
+  $.get(ws_url + '/notation', function (data) {
     status(true, data.message);
   });
 };
@@ -508,6 +511,31 @@ $("#tcec-kibitzer-name").click(function () {
   });
 });
 
+// Initialization (check if API is up)
+$.ajax(ws_url + '/init', {
+  timeout: 5000,
+  error: function () {
+    status(false, 'API if offline');
+  },
+  success: function (json) {
+    online = true;
+    running = false;
+
+    status(true, json.message);
+
+    // Create and populate engines dropdown
+    if (json.engines) {
+      update_engines_dropdown(json.engines);
+
+      // Show current selected engine
+      var select = document.getElementById("tcec-kibitzer-engine-options");
+      if (select) {
+        select.selectedIndex = json.engine_no;
+      }
+    }
+  }
+});
+
 /*
 http://dev.opera.com/articles/view/mutation-observers-tutorial/
 https://developer.mozilla.org/en/docs/Web/API/MutationObserver
@@ -535,6 +563,6 @@ observer.observe(elem, {
 });
 
 // Stop engine when closing window
-window.onbeforeunload = function(){
-   do_reset();
-}
+window.onbeforeunload = function () {
+  do_reset();
+};

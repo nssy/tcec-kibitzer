@@ -21,7 +21,6 @@ port = 2035
 # Default engine to start with in engines.json file
 engine_no = 0
 
-
 message = None
 status = 0
 
@@ -42,6 +41,13 @@ except:
 @api.route('/')
 def index():
     return api.send_static_file("index.html")
+
+@api.route('/init')
+def init():
+    return jsonify(status=status,
+                   message="API is up and running. Select your engine and click start",
+                   engine_no=engine_no,
+                   engines=engines)
 
 @api.route('/start', methods=['GET'])
 def start():
@@ -85,14 +91,14 @@ def setPosition():
                     source=source,
                     message=message)
 
-@api.route('/notation', methods=['GET'])
+@api.route('/notation')
 def setNotationType():
     movetype = engine.cycleNotationType()
 
     return jsonify(status=1,
                         message="Notation type is now "+str(movetype))
 
-@api.route('/output', methods=['GET'])
+@api.route('/output')
 def output():
     d = engine.sendOutput()
     if any(d):

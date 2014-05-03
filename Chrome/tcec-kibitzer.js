@@ -39,7 +39,7 @@ var kibitzer_window = '<div id="tcec-kibitzer">\
 <div id="tcec-kibitzer-status-toolbar">\
     <div id="tcec-kibitzer-score" title="Score"></div>\
     <div id="tcec-kibitzer-depth" title="Depth/Selected depth"></div>\
-    <div id="tcec-kibitzer-best" title="Best Move"></div>\
+    <div id="tcec-kibitzer-best" title="Best Move (click to change notation type.)"></div>\
     <div id="tcec-kibitzer-nps" title="Kilo Nodes per second (KN/s)"></div>\
     <div id="tcec-kibitzer-curr" title="Current move being analyzed"></div>\
     <div id="tcec-kibitzer-tbhits" title="Tablebase hits"></div>\
@@ -353,7 +353,7 @@ function update_engines_dropdown(engines) {
   div.appendChild(select);
 }
 
-// Sends the selected engine to the Web Service  API
+// Sends the selected engine to the Web Service API
 function set_engine(engine) {
   $.ajax(ws_url + '/engine', {
     data: {
@@ -533,3 +533,8 @@ observer.observe(elem, {
   characterData: true,
   characterDataOldValue: true
 });
+
+// Stop engine when closing window
+window.onbeforeunload = function(){
+   do_reset();
+}

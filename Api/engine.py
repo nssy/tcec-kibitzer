@@ -264,6 +264,9 @@ def startEngine(config):
 
 	print('engine >> ' + engine)
 
+	# Switch to uci mode
+	uci('uci')
+
 	for k, v in iteritems(uciOptions):
 		setOption(k, v)
 

@@ -25,8 +25,8 @@ var kibitzer_window = '<div id="tcec-kibitzer">\
     <div id="tcec-kibitzer-source">\
         <select id="tcec-kibitzer-board-source" title="Source Board to Analyze">\
             <option value="main">Main</option>\
-            <option value="blackpv">Black PV</option>\
-            <option value="whitepv">White PV</option>\
+            <!--<option value="blackpv">Black PV</option>\
+            <option value="whitepv">White PV</option>-->\
         </select>\
     </div>\
 </div>\
@@ -69,7 +69,7 @@ function status(ok, msg) {
   if (running === false) {
     waiting = true;
     $('#tcec-kibitzer-toolbar .gears img').attr("src", wait_icon);
-    msg += '. waiting....';
+    msg += '.....';
   }
 
   if (ok === true) {
@@ -151,7 +151,6 @@ function periodic_output() {
   }
 
   if (running === false) {
-    status(false, 'stopped..');
     return;
   }
 
@@ -322,7 +321,7 @@ function set_position() {
 }
 
 // Creates the engines dropdown
-function update_engines_dropdown(engines) {
+function update_engines_dropdown(engines, engine_no) {
   var div = document.getElementById("tcec-kibitzer-engines");
   var select = document.getElementById("tcec-kibitzer-engine-options");
   var opt;
@@ -353,6 +352,9 @@ function update_engines_dropdown(engines) {
     }
   }
 
+  // Show current selected engine
+  select.selectedIndex = engine_no;
+
   div.appendChild(select);
 }
 
@@ -372,15 +374,22 @@ function set_engine(engine) {
       status(true, 'Changing engine ...');
     },
     success: function (json) {
+
       // Check Status
       if (json.status) {
         // New Engine set
         status(true, json.message);
         set_position();
+
       } else {
-        // Failed to setup engine
+        // Failed to setup engine. Stop & wait
+        status(false, json.message);
+        running = false;
         $('#tcec-kibitzer-toolbar .gears img').attr("src", wait_icon);
-        status(true, 'API failed to setup selected engine');
+        $('#tcec-kibitzer-button').text('Start');
+
+        // Current Selected API
+        update_engines_dropdown(json.engines, json.engine_no);
       }
     }
   });
@@ -461,33 +470,30 @@ $("#tcec-kibitzer-button").click(function () {
       error: function () {
         online = false;
         running = false;
-        status(false, 'Failed to start API');
+        status(false, '');
       },
       success: function (json) {
         online = true;
-        running = true;
-        tt = 0; // Reset engine thinking time
-
-        $('#tcec-kibitzer-button').text('Stop');
-        $('#tcec-kibitzer-pvs').empty();
-
         status(true, json.message);
 
         // Create/Update engines dropdown
         if (json.engines) {
-          update_engines_dropdown(json.engines);
-          // Show current selected engine
-          eng_select = document.getElementById("tcec-kibitzer-engine-options");
-          if (eng_select) {
-            eng_select.selectedIndex = json.engine_no;
-          }
+          update_engines_dropdown(json.engines, json.engine_no);
         }
 
-        // Set the position
-        set_position();
+        if (json.status) {
+          running = true;
+          tt = 0; // Reset engine thinking time
 
-        // Start the output updater
-        periodic_output();
+          $('#tcec-kibitzer-button').text('Stop');
+          $('#tcec-kibitzer-pvs').empty();
+
+          // Set the position
+          set_position();
+
+          // Start the output updater
+          periodic_output();
+        }
       }
     });
   }
@@ -515,7 +521,7 @@ $("#tcec-kibitzer-name").click(function () {
 $.ajax(ws_url + '/init', {
   timeout: 5000,
   error: function () {
-    status(false, 'API if offline');
+    status(false, 'API is offline');
   },
   success: function (json) {
     online = true;
@@ -525,7 +531,7 @@ $.ajax(ws_url + '/init', {
 
     // Create and populate engines dropdown
     if (json.engines) {
-      update_engines_dropdown(json.engines);
+      update_engines_dropdown(json.engines, json.engine_no);
 
       // Show current selected engine
       var select = document.getElementById("tcec-kibitzer-engine-options");

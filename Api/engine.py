@@ -21,6 +21,7 @@ currFEN = ''
 notation = {0:'Direct', 1:'SAN', 2:'LAN'}
 notationType = 1
 MultiPV = 5
+eng_no = 0
 
 cb = ChessBoard()
 
@@ -72,7 +73,7 @@ def movesNotation(fen, moves, type=1):
 					formatted += str(mvNo)+'...'
 				formatted += str(cb.getLastTextMove(type)) + ' '
 		else:
-			print('ChessBoard.py failed to add ', m[i], reasons[cb.getReason()])
+			print(' -> ChessBoard.py failed to add ', m[i], reasons[cb.getReason()])
 			return False, formatted
 	return True, formatted
 
@@ -92,16 +93,14 @@ def parseOutput():
 	score = {}
 	pv = {}
 	bounds = {}
-	fen = ''
 
 	while True:
 		if stopped:
-			print('output parser stopped .....')
 			sleep(1)
 			continue
 
 		if eng.poll():
-			print("\nEngine stopped .....")
+			print(" -> Engine stopped")
 			break
 
 		# Clear all pv info
@@ -112,11 +111,11 @@ def parseOutput():
 				bounds = {}
 				score = {}
 				eng.stdout.flush()
-				print('- - cleared output')
+				print(' -> cleared output')
 				resetOutput = False
-
-			except:
-				print('Failed to clear ')
+			except Exception as e:
+				print(' -> ' +str(e))
+				print(' -> Failed to clear output')
 
 		line = eng.stdout.readline().decode().rstrip()
 
@@ -219,9 +218,6 @@ def parseOutput():
 		output["pv"] = pv
 		output["score"] = score
 		output["bounds"] = bounds
-		#print(line)
-		#print(output)
-		#eng.stdout.flush()
 
 def uci(command):
     print('engine << '+command)
@@ -232,49 +228,63 @@ def setOption(name, value):
 	command = 'setoption name '+str(name)+' value '+str(value)
 	uci(command)
 
-def startEngine(config):
+def startEngine(engines, choice):
 	global stopped
 	global t
 	global eng
+	global eng_no
+
+	config = engines[choice]
 	uciOptions = config['uci_options']
 
 	# Stop existing engine
 	stopped = True
+
 	if eng:
 		try:
+			print(' -> changing engine')
 			stop()
 			uci('quit')
-		except:
-			return False, 'Failed to stop current engine..'
+		except Exception as e:
+			eng = None
+			print(' -> '+ str(e))
 
 	# Start new engine
 	try:
 		eng = subprocess.Popen([config['path']], stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0)
-	except subprocess.CalledProcessError as e:
-		return False, 'Could not start the engine specified'
+	except Exception as e:
+		print(' -> '+str(e))
+		eng = None
+		return False, eng_no, 'Could not start the selected engine '+config['name']
 
-	lst = eng.stdout.readline().decode().rstrip().split()
-	engine = lst[0]+' '+lst[1]
+	if not eng.poll():
 
-	# Start output parser thread
-	if not t:
-		t = Thread(target=parseOutput)
-		t.daemon = True
-		t.start()
+		try:
+			lst = eng.stdout.readline().decode().rstrip().split()
+			engine = lst[0]+' '+lst[1]
+		except Exception as e:
+			print(' -> '+str(e))
+			return False, eng_no, 'invalid engine '+config['name']
 
-	print('engine >> ' + engine)
+		# Start output parser thread
+		if not t:
+			t = Thread(target=parseOutput)
+			t.daemon = True
+			t.start()
 
-	# Switch to uci mode
-	uci('uci')
+		print('engine >> ' + engine)
 
-	for k, v in iteritems(uciOptions):
-		setOption(k, v)
+		# Switch to uci mode
+		uci('uci')
 
-	# Default MultiPV
-	setOption('MultiPV', MultiPV)
+		for k, v in iteritems(uciOptions):
+			setOption(k, v)
 
-	stopped = False
-	return True, 'Engine is now set to '+engine
+		# Default MultiPV
+		setOption('MultiPV', MultiPV)
+		stopped = False
+		eng_no = choice
+		return True, eng_no, 'Engine is now set to '+engine
 
 def setPosition(fen):
 	global side
@@ -291,17 +301,19 @@ def setPosition(fen):
 		else:
 			side = 'b'
 		uci('position fen ' + fen)
-	except:
+		return True, "New position set"
+	except Exception as e:
+		print(' -> ' +str(e))
 		return False, "Unable to set new position"
-
-	return True, "New position set"
 
 def stop():
 	try:
 		global output
+		global resetOutput
 		uci('stop')
 		resetOutput = True
-	except:
+	except Exception as e:
+		print(' -> ' +str(e))
 		return False, 'Failed to stop engine'
 
 	return True, 'Engine stopped'
@@ -323,7 +335,8 @@ def sendOutput():
 			output2['pv'] = pvNotation
 			return output2
 
-		except:
+		except Exception as e:
+			print(' -> ' +str(e))
 			print(notationType, 'skipping pv notation conversion for now')
 
 	return output
@@ -342,9 +355,10 @@ def houseKeeping():
 		if eng:
 			uci('quit')
 			eng.terminate()
-			print('Gracefully exited ......')
-	except:
-		print("Engine already exited .....")
+			print(' -> Gracefully exited ...')
+	except Exception as e:
+		print(' -> ' +str(e))
+		print(" -> Engine already exited ...")
 
 	sleep(1)
-	print('    exiting .......')
+	print('    exiting ...')

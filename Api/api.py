@@ -54,7 +54,7 @@ def start():
     global engine_no
     if int(request.args['engine_no']):
         engine_no = int(request.args['engine_no'])
-    status, message = engine.startEngine(engines[engine_no])
+    status, engine_no, message = engine.startEngine(engines, engine_no)
 
     return jsonify(status=status,
                    message=message,
@@ -72,11 +72,12 @@ def setEngine():
     engine_no = int(request.args['engine_no'])
 
     # Set engine
-    status, message = engine.startEngine(engines[engine_no])
+    status, engine_no, message = engine.startEngine(engines, engine_no)
 
     return jsonify(status=status,
-                   engine=engines[engine_no],
-                   message=message)
+                   message=message,
+                   engine_no=engine_no,
+                   engines=engines)
 
 @api.route('/position', methods=['GET'])
 def setPosition():
@@ -87,16 +88,16 @@ def setPosition():
     engine.go()
 
     return jsonify(status=status,
-                    fen=str(fen),
-                    source=source,
-                    message=message)
+                   message=message,
+                   fen=str(fen),
+                   source=source)
 
 @api.route('/notation')
 def setNotationType():
     movetype = engine.cycleNotationType()
 
     return jsonify(status=1,
-                        message="Notation type is now "+str(movetype))
+                   message="Notation type is now "+str(movetype))
 
 @api.route('/output')
 def output():
@@ -109,8 +110,8 @@ def output():
         status=0
         d = False
     return jsonify(status=status,
-                    message=message,
-                    data=d)
+                   message=message,
+                   data=d)
 
 if __name__ == '__main__':
     api.run(host = host, port = port, debug = True)

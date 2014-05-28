@@ -67,11 +67,11 @@ def movesNotation(fen, moves, type=1):
 		if cb.addTextMove(m[i]):
 			if (cb.getTurn()):
 				formatted += str(mvNo)+'.' + str(cb.getLastTextMove(type)) + ' '
-				mvNo += 1
 			else:
 				if i == 0:
 					formatted += str(mvNo)+'...'
 				formatted += str(cb.getLastTextMove(type)) + ' '
+			mvNo += 1
 		else:
 			print(' -> ChessBoard.py failed to add ', m[i], reasons[cb.getReason()])
 			return False, formatted

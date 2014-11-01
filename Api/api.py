@@ -52,7 +52,7 @@ def init():
 @api.route('/start', methods=['GET'])
 def start():
     global engine_no
-    if int(request.args['engine_no']):
+    if int(request.args['engine_no']) >= 0:
         engine_no = int(request.args['engine_no'])
     status, engine_no, message = engine.startEngine(engines, engine_no)
 
